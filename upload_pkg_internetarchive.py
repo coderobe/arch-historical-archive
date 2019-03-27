@@ -83,6 +83,7 @@ class ArchiveUploader:
             print("{}: exception raised".format(identifier), file=sys.stderr)
             print(e, file=sys.stderr)
             print(directory)
+            raise
 
 
     def main(self, pkg_dir):
