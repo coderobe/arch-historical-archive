@@ -7,6 +7,8 @@ import tarfile
 
 import internetarchive as ia
 
+import DB
+
 class ArchiveUploader:
     DESCRIPTION = """{pkgdesc}
 
@@ -16,10 +18,9 @@ class ArchiveUploader:
     See the <a href="https://wiki.archlinux.org/index.php/Arch_Linux_Archive">Arch Linux Archive documentation</a> for details.
     """
 
-    def __init__(self, internetarchive = ia):
+    def __init__(self, internetarchive = ia, db = DB.DB('archive-uploader.sqlite')):
         self.ia = internetarchive
-
-        pass
+        self.db = db
 
     def clean_name(self, name):
         """Remove chars that are not allowed in an Internet Archive identifier: @.+
@@ -52,7 +53,9 @@ class ArchiveUploader:
         """Upload all versions for package given by [directory]"""
         files = []
         for f in os.scandir(directory):
-            files.append(f.path)
+            filename = os.path.basename(f.path)
+            if not self.db.exists(filename):
+                files.append(f.path)
         if not files:
             return
         # Get last package, to extract a description
@@ -65,7 +68,12 @@ class ArchiveUploader:
         #print(metadata)
         try:
             res = self.ia.upload(identifier, files=files, metadata=metadata)
-            if not all([x.status_code == 200 for x in res]):
+            if all([x.status_code == 200 for x in res]):
+                for f in files:
+                    if not f.endswith('.sig'):
+                        filename = os.path.basename(f)
+                        self.db.add_file(filename)
+            else:
                 ok = len([x for x in res if x.status_code == 200])
                 nok = len([x for x in res if x.status_code != 200])
                 codes = set([x.status_code for x in res])
