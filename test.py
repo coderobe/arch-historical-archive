@@ -12,7 +12,11 @@ class TestUploader(unittest.TestCase):
         mock_uploader = MagicMock()
         app = upload_pkg_internetarchive.ArchiveUploader(mock_uploader)
         app.main('./test-data/archive/packages/f/fb-client', ['2018'])
-        mock_uploader.upload.assert_called()
+
+        mock_uploader.upload.assert_called_with('archlinux_pkg_fb-client',
+                files=['./test-data/archive/packages/f/fb-client/fb-client-2.0.3-2-any.pkg.tar.xz',
+                    './test-data/archive/packages/f/fb-client/fb-client-2.0.3-2-any.pkg.tar.xz.sig'],
+                metadata=mock.ANY)
 
 
 
