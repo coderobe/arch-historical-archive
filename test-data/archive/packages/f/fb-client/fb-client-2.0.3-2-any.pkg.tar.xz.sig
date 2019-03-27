@@ -1,0 +1,1 @@
+../../../repos/2018/11/10/pool/community/fb-client-2.0.3-2-any.pkg.tar.xz.sig

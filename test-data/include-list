@@ -1,0 +1,14 @@
++ repos/
++ repos/2018/
++ repos/2018/11/
++ repos/2018/11/10/
++ repos/2018/11/10/pool/
++ repos/2018/11/10/pool/community/
++ repos/2018/11/10/pool/community/fb-client-*
+
++ packages/
++ packages/f/
++ packages/f/fb-client/
++ packages/f/fb-client/*
+
+- *
