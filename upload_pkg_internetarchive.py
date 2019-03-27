@@ -16,11 +16,8 @@ class ArchiveUploader:
     See the <a href="https://wiki.archlinux.org/index.php/Arch_Linux_Archive">Arch Linux Archive documentation</a> for details.
     """
 
-    def __init__(self, internetarchive = None):
-        if internetarchive is not None:
-            self.ia = internetarchive
-        else:
-            self.ia = ia
+    def __init__(self, internetarchive = ia):
+        self.ia = internetarchive
 
         pass
 
