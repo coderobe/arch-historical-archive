@@ -16,8 +16,6 @@ class ArchiveUploader:
     See the <a href="https://wiki.archlinux.org/index.php/Arch_Linux_Archive">Arch Linux Archive documentation</a> for details.
     """
 
-    SYMLINK_YEAR_REGEXP = re.compile(r'.*/repos/([0-9]{4})/')
-
     def __init__(self, internetarchive = None):
         if internetarchive is not None:
             self.ia = internetarchive
@@ -53,20 +51,10 @@ class ArchiveUploader:
                     res[key] = value
             return res
 
-    def upload_pkg(self, identifier, pkgname, metadata, directory, years):
-        """Upload all versions for package given by [directory], provided they date back
-        from one of the [years]"""
+    def upload_pkg(self, identifier, pkgname, metadata, directory):
+        """Upload all versions for package given by [directory]"""
         files = []
         for f in os.scandir(directory):
-            if not f.is_symlink():
-                continue
-            path = os.readlink(f)
-            match = re.match(ArchiveUploader.SYMLINK_YEAR_REGEXP, path)
-            if not match:
-                continue
-            year = match[1]
-            if year not in years:
-                continue
             files.append(f.path)
         if not files:
             return
@@ -92,8 +80,8 @@ class ArchiveUploader:
             print(directory)
 
 
-    def main(self, pkg_dir, years):
-        """Upload all versions of a single package, from the given years"""
+    def main(self, pkg_dir):
+        """Upload all versions of a single package"""
         pkgname = os.path.basename(pkg_dir)
         identifier = self.clean_name('archlinux_pkg_' + pkgname)
         metadata = {
@@ -107,7 +95,7 @@ class ArchiveUploader:
         }
         metadata['title'] = pkgname + " package archive from Arch Linux"
         metadata['subject'].append(pkgname)
-        self.upload_pkg(identifier, pkgname, metadata, pkg_dir, years)
+        self.upload_pkg(identifier, pkgname, metadata, pkg_dir)
 
 if __name__ == '__main__':
-    ArchiveUploader().main(sys.argv[1], ['2013', '2014', '2015', '2016'])
+    ArchiveUploader().main(sys.argv[1])
