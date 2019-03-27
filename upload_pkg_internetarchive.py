@@ -18,7 +18,12 @@ class ArchiveUploader:
 
     SYMLINK_YEAR_REGEXP = re.compile(r'.*/repos/([0-9]{4})/')
 
-    def __init__(self):
+    def __init__(self, internetarchive = None):
+        if internetarchive is not None:
+            self.ia = internetarchive
+        else:
+            self.ia = ia
+
         pass
 
     def clean_name(self, name):
@@ -74,7 +79,7 @@ class ArchiveUploader:
         #print(pkgname, len(files))
         #print(metadata)
         try:
-            res = ia.upload(identifier, files=files, metadata=metadata)
+            res = self.ia.upload(identifier, files=files, metadata=metadata)
             if not all([x.status_code == 200 for x in res]):
                 ok = len([x for x in res if x.status_code == 200])
                 nok = len([x for x in res if x.status_code != 200])
