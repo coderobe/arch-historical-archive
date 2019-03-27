@@ -70,9 +70,8 @@ class ArchiveUploader:
             res = self.ia.upload(identifier, files=files, metadata=metadata)
             if all([x.status_code == 200 for x in res]):
                 for f in files:
-                    if not f.endswith('.sig'):
-                        filename = os.path.basename(f)
-                        self.db.add_file(filename)
+                    filename = os.path.basename(f)
+                    self.db.add_file(filename)
             else:
                 ok = len([x for x in res if x.status_code == 200])
                 nok = len([x for x in res if x.status_code != 200])
