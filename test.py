@@ -16,7 +16,9 @@ class TestUploader(unittest.TestCase):
 
         response_ok = MagicMock(status_code=200)
 
-        mock_uploader.configure_mock(**{'upload.side_effect': [[response_ok, response_ok, response_ok, response_ok]]})
+        mock_uploader.upload.side_effect = [
+                [response_ok, response_ok, response_ok, response_ok]
+                ]
 
         self.assertFalse(app.db.exists('fb-client-2.0.4-1-any.pkg.tar.xz'))
         self.assertFalse(app.db.exists('fb-client-2.0.3-2-any.pkg.tar.xz'))
