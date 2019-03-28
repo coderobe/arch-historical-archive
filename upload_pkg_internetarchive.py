@@ -70,16 +70,16 @@ class ArchiveUploader:
         #print(metadata)
         try:
             res = self.ia.upload(identifier, files=files, metadata=metadata)
-            if all([x.status_code == 200 for x in res]):
-                for f in files:
+            file_status = zip(files, res)
+            for status in file_status:
+                f = status[0]
+                code = status[1].status_code
+                if code == 200:
                     filename = os.path.basename(f)
                     self.db.add_file(filename)
-            else:
-                ok = len([x for x in res if x.status_code == 200])
-                nok = len([x for x in res if x.status_code != 200])
-                codes = set([x.status_code for x in res])
-                print("{}: only {}/{} files uploaded, status codes: {}".format(identifier, ok, ok+nok, codes), file=sys.stderr)
-                print(directory)
+                else:
+                    print("Upload failed with status code '{}' for directory '{}' and file: {}"
+                            .format(code, directory, f))
         except Exception as e:
             print("{}: exception raised".format(identifier), file=sys.stderr)
             print(e, file=sys.stderr)
