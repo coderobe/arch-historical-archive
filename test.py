@@ -31,10 +31,10 @@ class TestUploader(unittest.TestCase):
         app.main('./test-data/archive/packages/f/fb-client')
 
         mock_uploader.upload.assert_called_once_with('archlinux_pkg_fb-client',
-                files=['./test-data/archive/packages/f/fb-client/fb-client-2.0.4-1-any.pkg.tar.xz',
-                    './test-data/archive/packages/f/fb-client/fb-client-2.0.3-2-any.pkg.tar.xz',
-                    './test-data/archive/packages/f/fb-client/fb-client-2.0.4-1-any.pkg.tar.xz.sig',
-                    './test-data/archive/packages/f/fb-client/fb-client-2.0.3-2-any.pkg.tar.xz.sig'],
+                files=['./test-data/archive/packages/f/fb-client/fb-client-2.0.3-2-any.pkg.tar.xz',
+                    './test-data/archive/packages/f/fb-client/fb-client-2.0.3-2-any.pkg.tar.xz.sig',
+                    './test-data/archive/packages/f/fb-client/fb-client-2.0.4-1-any.pkg.tar.xz',
+                    './test-data/archive/packages/f/fb-client/fb-client-2.0.4-1-any.pkg.tar.xz.sig',],
                 metadata=mock.ANY)
 
 

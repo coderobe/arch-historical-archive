@@ -58,6 +58,8 @@ class ArchiveUploader:
                 files.append(f.path)
         if not files:
             return
+        # ensure reproducible order for tests
+        files.sort()
         # Get last package, to extract a description
         last_pkg = sorted(filter(lambda x: not x.endswith('.sig'), files))[-1]
         pkginfo = self.extract_pkginfo(last_pkg)
