@@ -66,8 +66,7 @@ class ArchiveUploader:
         pkgdesc = pkginfo['pkgdesc'] if 'pkgdesc' in pkginfo else ''
         metadata['description'] = ArchiveUploader.DESCRIPTION.format(pkgname=pkgname, pkgdesc=pkgdesc, url=pkginfo['url'], license=pkginfo['license'])
         metadata['rights'] = 'License: ' + pkginfo['license']
-        #print(pkgname, len(files))
-        #print(metadata)
+
         try:
             res = self.ia.upload(identifier, files=files, metadata=metadata)
             file_status = zip(files, res)
@@ -92,8 +91,6 @@ class ArchiveUploader:
         pkgname = os.path.basename(pkg_dir)
         identifier = self.clean_name('archlinux_pkg_' + pkgname)
         metadata = {
-            #'collection': ['test_collection', 'open_source_software'],
-            #'collection': ['open_source_software'],
             'collection': ['archlinuxarchive'],
             'mediatype': 'software',
             'publisher': 'Arch Linux',
