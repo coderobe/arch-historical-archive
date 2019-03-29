@@ -77,10 +77,9 @@ class ArchiveUploader:
                     filename = os.path.basename(f)
                     self.db.add_file(filename)
                 else:
-                    print("Upload failed with status code '{}' for directory '{}' and file: {}"
-                            .format(code, directory, f))
+                    print(f"Upload failed with status code '{code}' for directory '{directory}' and file: {f}")
         except Exception as e:
-            print("{}: exception raised".format(identifier), file=sys.stderr)
+            print(f"{identifier}: exception raised", file=sys.stderr)
             print(e, file=sys.stderr)
             print(directory)
             raise
