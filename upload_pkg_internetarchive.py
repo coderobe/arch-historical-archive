@@ -90,20 +90,21 @@ class ArchiveUploader:
             raise
 
 
-    def main(self, pkg_dir):
-        """Upload all versions of a single package"""
-        pkgname = os.path.basename(pkg_dir)
-        identifier = self.clean_name('archlinux_pkg_' + pkgname)
-        metadata = {
-            'collection': ['archlinuxarchive'],
-            'mediatype': 'software',
-            'publisher': 'Arch Linux',
-            'creator': 'Arch Linux',
-            'subject': ['archlinux', 'archlinux package'],
-        }
-        metadata['title'] = pkgname + " package archive from Arch Linux"
-        metadata['subject'].append(pkgname)
-        self.upload_pkg(identifier, pkgname, metadata, pkg_dir)
+    def main(self, pkg_dirs):
+        """Upload all versions of each package"""
+        for pkg_dir in pkg_dirs:
+            pkgname = os.path.basename(pkg_dir)
+            identifier = self.clean_name('archlinux_pkg_' + pkgname)
+            metadata = {
+                'collection': ['archlinuxarchive'],
+                'mediatype': 'software',
+                'publisher': 'Arch Linux',
+                'creator': 'Arch Linux',
+                'subject': ['archlinux', 'archlinux package'],
+            }
+            metadata['title'] = pkgname + " package archive from Arch Linux"
+            metadata['subject'].append(pkgname)
+            self.upload_pkg(identifier, pkgname, metadata, pkg_dir)
 
 if __name__ == '__main__':
-    ArchiveUploader().main(sys.argv[1])
+    ArchiveUploader().main(sys.argv[1:])

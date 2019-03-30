@@ -15,6 +15,10 @@ To upload *all* packages or at least a large subset, combine `find` and `paralle
 
     find /srv/archive/packages -mindepth 2 -maxdepth 2 -type d | parallel --bar -j16 ~/upload_pkg_internetarchive.py > result.txt
 
+Or use:
+
+    find /srv/archive/packages -mindepth 2 -maxdepth 2 -type d -exec "/home/archive/archive-uploader/upload_pkg_internetarchive.py" {} +
+
 The script outputs to stdout any package name it couldn't completely upload.
 This may be due to archive.org load issues or rate limiting. It also maintains
 a database so that you can run it again against all files. Files that have
