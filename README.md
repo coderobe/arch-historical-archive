@@ -16,7 +16,9 @@ To upload *all* packages or at least a large subset, combine `find` and `paralle
     find /srv/archive/packages -mindepth 2 -maxdepth 2 -type d | parallel --bar -j16 ~/upload_pkg_internetarchive.py > result.txt
 
 The script outputs to stdout any package name it couldn't completely upload.
-This may be due to archive.org load issues or rate limiting.
+This may be due to archive.org load issues or rate limiting. It also maintains
+a database so that you can run it again against all files. Files that have
+already been uploaded will be skipped automatically.
 
 ## How it works
 
@@ -29,5 +31,6 @@ This may be due to archive.org load issues or rate limiting.
 - upload all files in this list to archive.org
 
 - if one of the files fails to upload, report the package name to stdout.  The script needs
-  to be run again for this package name.
+  to be run again for this package name. The status is recorded in an sqlite
+  database and used to skip successful uploads on the next run.
 
