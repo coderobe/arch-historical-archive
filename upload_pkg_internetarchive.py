@@ -70,6 +70,7 @@ class ArchiveUploader:
         try:
             res = self.ia.upload(identifier, files=files, metadata=metadata)
             file_status = zip(files, res)
+            print_error = False
             for status in file_status:
                 f = status[0]
                 code = status[1].status_code
@@ -78,6 +79,10 @@ class ArchiveUploader:
                     self.db.add_file(filename)
                 else:
                     print(f"Upload failed with status code '{code}' for directory '{directory}' and file: {f}", file=sys.stderr)
+                    print_error = True
+
+            if print_error:
+                print(directory)
         except Exception as e:
             print(f"{identifier}: exception raised", file=sys.stderr)
             print(e, file=sys.stderr)
