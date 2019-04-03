@@ -8,6 +8,9 @@ import tarfile
 import internetarchive as ia
 
 import DB
+# Source: http://stackoverflow.com/a/434328/953022
+def chunker(seq, size):
+    return (seq[pos:pos + size] for pos in range(0, len(seq), size))
 
 class ArchiveUploader:
     DESCRIPTION = """{pkgdesc}
@@ -21,6 +24,7 @@ class ArchiveUploader:
     def __init__(self, internetarchive = ia, db = DB.DB('archive-uploader.sqlite')):
         self.ia = internetarchive
         self.db = db
+        self.chunksize = 20
 
     def clean_name(self, name):
         """Remove chars that are not allowed in an Internet Archive identifier: @.+
@@ -51,43 +55,44 @@ class ArchiveUploader:
 
     def upload_pkg(self, identifier, pkgname, metadata, directory):
         """Upload all versions for package given by [directory]"""
-        files = []
+        all_files = []
         for f in os.scandir(directory):
             filename = os.path.basename(f.path)
             if not self.db.exists(filename):
-                files.append(f.path)
-        if not files:
+                all_files.append(f.path)
+        if not all_files:
             return
         # ensure reproducible order for tests
-        files.sort()
+        all_files.sort()
         # Get last package, to extract a description
-        last_pkg = sorted(filter(lambda x: not x.endswith('.sig'), files))[-1]
+        last_pkg = sorted(filter(lambda x: not x.endswith('.sig'), all_files))[-1]
         pkginfo = self.extract_pkginfo(last_pkg)
         pkgdesc = pkginfo['pkgdesc'] if 'pkgdesc' in pkginfo else ''
         metadata['description'] = ArchiveUploader.DESCRIPTION.format(pkgname=pkgname, pkgdesc=pkgdesc, url=pkginfo['url'], license=pkginfo['license'])
         metadata['rights'] = 'License: ' + pkginfo['license']
 
-        try:
-            res = self.ia.upload(identifier, files=files, metadata=metadata)
-            file_status = zip(files, res)
-            print_error = False
-            for status in file_status:
-                f = status[0]
-                code = status[1].status_code
-                if code == 200:
-                    filename = os.path.basename(f)
-                    self.db.add_file(filename)
-                else:
-                    print(f"Upload failed with status code '{code}' for directory '{directory}' and file: {f}", file=sys.stderr)
-                    print_error = True
+        for files in chunker(all_files, self.chunksize):
+            try:
+                res = self.ia.upload(identifier, files=files, metadata=metadata)
+                file_status = zip(files, res)
+                print_error = False
+                for status in file_status:
+                    f = status[0]
+                    code = status[1].status_code
+                    if code == 200:
+                        filename = os.path.basename(f)
+                        self.db.add_file(filename)
+                    else:
+                        print(f"Upload failed with status code '{code}' for directory '{directory}' and file: {f}", file=sys.stderr)
+                        print_error = True
 
-            if print_error:
+                if print_error:
+                    print(directory)
+            except Exception as e:
+                print(f"{identifier}: exception raised", file=sys.stderr)
+                print(e, file=sys.stderr)
                 print(directory)
-        except Exception as e:
-            print(f"{identifier}: exception raised", file=sys.stderr)
-            print(e, file=sys.stderr)
-            print(directory)
-            raise
+                raise
 
 
     def main(self, pkg_dirs):
