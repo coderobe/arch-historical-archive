@@ -92,7 +92,6 @@ class ArchiveUploader:
                 print(f"{identifier}: exception raised", file=sys.stderr)
                 print(e, file=sys.stderr)
                 print(directory)
-                raise
 
 
     def main(self, pkg_dirs):
