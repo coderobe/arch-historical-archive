@@ -10,5 +10,10 @@
 + packages/f/
 + packages/f/fb-client/
 + packages/f/fb-client/*
++ packages/l/
++ packages/l/libreoffice-fresh-sr-latn/
++ packages/l/libreoffice-fresh-sr-latn/libreoffice-fresh-sr-latn-6.2.3-1-any.pkg.tar.xz*
++ packages/l/libreoffice-fresh-sr-Latn/
++ packages/l/libreoffice-fresh-sr-Latn/libreoffice-fresh-sr-Latn-5.3.0-1-any.pkg.tar.xz*
 
 - *
