@@ -21,10 +21,12 @@ class ArchiveUploader:
     See the <a href="https://wiki.archlinux.org/index.php/Arch_Linux_Archive">Arch Linux Archive documentation</a> for details.
     """
 
-    def __init__(self, internetarchive = ia, db = DB.DB('archive-uploader.sqlite')):
+    def __init__(self, internetarchive = ia, db = None):
         self.ia = internetarchive
         self.db = db
         self.chunksize = 20
+        if self.db is None:
+            self.db = DB.DB('archive-uploader.sqlite')
 
     def clean_name(self, name):
         """Remove chars that are not allowed in an Internet Archive identifier: @.+
