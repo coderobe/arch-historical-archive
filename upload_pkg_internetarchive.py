@@ -73,6 +73,10 @@ class ArchiveUploader:
         metadata['description'] = ArchiveUploader.DESCRIPTION.format(pkgname=pkgname, pkgdesc=pkgdesc, url=pkginfo['url'], license=pkginfo['license'])
         metadata['rights'] = 'License: ' + pkginfo['license']
 
+        # archive.org requires case-insensitively unique identifiers, but
+        # doesn't perform the mapping themselves. Thus, we do it here.
+        identifier = self.db.get_item_identifier(identifier)
+
         for files in chunker(all_files, self.chunksize):
             try:
                 res = self.ia.upload(identifier, files=files, metadata=metadata)

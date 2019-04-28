@@ -22,6 +22,10 @@ class DB:
             c.execute('drop table files_old;')
             self._set_version(2)
 
+        if version < 3:
+            c.execute('create table archive_identifier_aliases (from_identifier text, identifier text, primary key (`from_identifier`)) without rowid;')
+            self._set_version(3)
+
         self.db.commit()
 
     def _get_version(self):
@@ -35,6 +39,22 @@ class DB:
         c.execute('insert into files (filename, uploaded) values (?, 1)',
                 (filename,))
         self.db.commit()
+
+    def add_item_identifier(self, identifier):
+        c = self.db.cursor()
+        c.execute('insert into archive_identifier_aliases (from_identifier, identifier) values (?, ?)',
+                (identifier.lower(), identifier))
+        self.db.commit()
+
+    def get_item_identifier(self, identifier):
+        c = self.db.cursor()
+        c.execute('select identifier from archive_identifier_aliases where from_identifier = ?', (identifier.lower(),))
+        row = c.fetchone()
+        if row is not None:
+            return row['identifier']
+        else:
+            self.add_item_identifier(identifier)
+            return self.get_item_identifier(identifier)
 
     def exists(self, filename):
         c = self.db.cursor()
