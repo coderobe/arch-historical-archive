@@ -4,6 +4,7 @@ class DB:
     def __init__(self, db_file):
         self.db = sqlite3.connect(db_file)
         self.init_db()
+        self.db.row_factory = sqlite3.Row
 
     def init_db(self):
         c = self.db.cursor()
