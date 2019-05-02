@@ -10,7 +10,7 @@ class DB:
         c = self.db.cursor()
         version = self._get_version()
 
-        if version is None:
+        if version < 1:
             c.execute('create table if not exists files (filename text, uploaded int)')
             self._set_version(1)
             version = 1
@@ -29,7 +29,7 @@ class DB:
         self.db.commit()
 
     def _get_version(self):
-        self.db.cursor().execute('pragma user_version').fetchone()[0]
+        return self.db.cursor().execute('pragma user_version').fetchone()[0]
 
     def _set_version(self, version):
         self.db.cursor().execute('pragma user_version='+str(version))
