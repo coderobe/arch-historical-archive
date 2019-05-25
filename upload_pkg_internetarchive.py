@@ -102,19 +102,27 @@ class ArchiveUploader:
 
     def main(self, pkg_dirs):
         """Upload all versions of each package"""
+        exitcode = 0
         for pkg_dir in pkg_dirs:
-            pkgname = os.path.basename(pkg_dir)
-            identifier = self.clean_name('archlinux_pkg_' + pkgname)
-            metadata = {
-                'collection': ['archlinuxarchive'],
-                'mediatype': 'software',
-                'publisher': 'Arch Linux',
-                'creator': 'Arch Linux',
-                'subject': ['archlinux', 'archlinux package'],
-            }
-            metadata['title'] = pkgname + " package archive from Arch Linux"
-            metadata['subject'].append(pkgname)
-            self.upload_pkg(identifier, pkgname, metadata, pkg_dir)
+            try:
+                pkgname = os.path.basename(pkg_dir)
+                identifier = self.clean_name('archlinux_pkg_' + pkgname)
+                metadata = {
+                    'collection': ['archlinuxarchive'],
+                    'mediatype': 'software',
+                    'publisher': 'Arch Linux',
+                    'creator': 'Arch Linux',
+                    'subject': ['archlinux', 'archlinux package'],
+                }
+                metadata['title'] = pkgname + " package archive from Arch Linux"
+                metadata['subject'].append(pkgname)
+                self.upload_pkg(identifier, pkgname, metadata, pkg_dir)
+            except Exception as e:
+                print(f"{identifier}: exception raised", file=sys.stderr)
+                print(e, file=sys.stderr)
+                print(pkg_dir)
+                exitcode = 1
+        return exitcode
 
 if __name__ == '__main__':
-    ArchiveUploader().main(sys.argv[1:])
+    sys.exit(ArchiveUploader().main(sys.argv[1:]))
