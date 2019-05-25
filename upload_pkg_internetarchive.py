@@ -58,6 +58,7 @@ class ArchiveUploader:
     def upload_pkg(self, identifier, pkgname, metadata, directory):
         """Upload all versions for package given by [directory]"""
         all_files = []
+        returncode = 0
         for f in os.scandir(directory):
             filename = os.path.basename(f.path)
             if not self.db.exists(filename):
@@ -94,10 +95,14 @@ class ArchiveUploader:
 
                 if print_error:
                     print(directory)
+                    returncode = 1
             except Exception as e:
                 print(f"{identifier}: exception raised", file=sys.stderr)
                 print(e, file=sys.stderr)
                 print(directory)
+                returncode = 1
+
+        return returncode
 
 
     def main(self, pkg_dirs):
@@ -116,7 +121,9 @@ class ArchiveUploader:
                 }
                 metadata['title'] = pkgname + " package archive from Arch Linux"
                 metadata['subject'].append(pkgname)
-                self.upload_pkg(identifier, pkgname, metadata, pkg_dir)
+                error = self.upload_pkg(identifier, pkgname, metadata, pkg_dir)
+                if error:
+                    exitcode = 1
             except Exception as e:
                 print(f"{identifier}: exception raised", file=sys.stderr)
                 print(e, file=sys.stderr)
