@@ -72,6 +72,8 @@ class ArchiveUploader:
         last_pkg = sorted(filter(lambda x: not x.endswith('.sig'), all_files))[-1]
         pkginfo = self.extract_pkginfo(last_pkg)
         pkgdesc = pkginfo['pkgdesc'] if 'pkgdesc' in pkginfo else ''
+        if 'license' not in pkginfo:
+            pkginfo['license'] = ''
         metadata['description'] = ArchiveUploader.DESCRIPTION.format(pkgname=pkgname, pkgdesc=pkgdesc, url=pkginfo['url'], license=pkginfo['license'])
         metadata['rights'] = 'License: ' + pkginfo['license']
 
