@@ -26,13 +26,15 @@ class TestUploader(unittest.TestCase):
         self.assertFalse(app.db.exists('fb-client-2.0.3-2-any.pkg.tar.xz'))
         self.assertFalse(app.db.exists('fb-client-2.0.99-1-any.pkg.tar.xz'))
 
-        app.main(['./test-data/archive/packages/f/fb-client'])
+        ret = app.main(['./test-data/archive/packages/f/fb-client'])
+        self.assertEqual(ret, 0)
 
         self.assertTrue(app.db.exists('fb-client-2.0.4-1-any.pkg.tar.xz'))
         self.assertTrue(app.db.exists('fb-client-2.0.3-2-any.pkg.tar.xz'))
         self.assertFalse(app.db.exists('fb-client-2.0.99-1-any.pkg.tar.xz'))
 
-        app.main(['./test-data/archive/packages/f/fb-client'])
+        ret = app.main(['./test-data/archive/packages/f/fb-client'])
+        self.assertEqual(ret, 0)
 
         mock_uploader.upload.assert_has_calls([
             call('archlinux_pkg_fb-client',
@@ -62,7 +64,8 @@ class TestUploader(unittest.TestCase):
         self.assertFalse(app.db.exists('fb-client-2.0.4-1-any.pkg.tar.xz'))
         self.assertFalse(app.db.exists('fb-client-2.0.3-2-any.pkg.tar.xz'))
 
-        app.main(['./test-data/archive/packages/f/fb-client'])
+        ret = app.main(['./test-data/archive/packages/f/fb-client'])
+        self.assertEqual(ret, 1)
 
         mock_uploader.upload.assert_has_calls([
             call('archlinux_pkg_fb-client',
@@ -81,7 +84,8 @@ class TestUploader(unittest.TestCase):
         mock_uploader.reset_mock()
         mock_uploader.upload.side_effect = [[response_ok]]
 
-        app.main(['./test-data/archive/packages/f/fb-client'])
+        ret = app.main(['./test-data/archive/packages/f/fb-client'])
+        self.assertEqual(ret, 0)
 
         mock_uploader.upload.assert_called_once_with('archlinux_pkg_fb-client',
                 files=['./test-data/archive/packages/f/fb-client/fb-client-2.0.4-1-any.pkg.tar.xz'],
@@ -105,12 +109,14 @@ class TestUploader(unittest.TestCase):
         self.assertFalse(app.db.exists('libreoffice-fresh-sr-Latn-5.3.0-1-any.pkg.tar.xz'))
         self.assertFalse(app.db.exists('libreoffice-fresh-sr-latn-6.2.3-1-any.pkg.tar.xz'))
 
-        app.main(['./test-data/archive/packages/l/libreoffice-fresh-sr-Latn'])
+        ret = app.main(['./test-data/archive/packages/l/libreoffice-fresh-sr-Latn'])
+        self.assertEqual(ret, 0)
 
         self.assertTrue(app.db.exists('libreoffice-fresh-sr-Latn-5.3.0-1-any.pkg.tar.xz'))
         self.assertFalse(app.db.exists('libreoffice-fresh-sr-latn-6.2.3-1-any.pkg.tar.xz'))
 
-        app.main(['./test-data/archive/packages/l/libreoffice-fresh-sr-latn'])
+        ret = app.main(['./test-data/archive/packages/l/libreoffice-fresh-sr-latn'])
+        self.assertEqual(ret, 0)
 
         self.assertTrue(app.db.exists('libreoffice-fresh-sr-Latn-5.3.0-1-any.pkg.tar.xz'))
         self.assertTrue(app.db.exists('libreoffice-fresh-sr-latn-6.2.3-1-any.pkg.tar.xz'))
