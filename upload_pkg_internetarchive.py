@@ -4,6 +4,7 @@ import sys
 import os
 import re
 import tarfile
+import traceback
 
 import internetarchive as ia
 
@@ -98,7 +99,7 @@ class ArchiveUploader:
                     returncode = 1
             except Exception as e:
                 print(f"{identifier}: exception raised", file=sys.stderr)
-                print(e, file=sys.stderr)
+                print(traceback.format_exc(), file=sys.stderr)
                 print(directory)
                 returncode = 1
 
@@ -126,7 +127,7 @@ class ArchiveUploader:
                     exitcode = 1
             except Exception as e:
                 print(f"{identifier}: exception raised", file=sys.stderr)
-                print(e, file=sys.stderr)
+                print(traceback.format_exc(), file=sys.stderr)
                 print(pkg_dir)
                 exitcode = 1
         return exitcode
