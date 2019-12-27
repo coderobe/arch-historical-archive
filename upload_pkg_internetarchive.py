@@ -3,7 +3,7 @@
 import sys
 import os
 import re
-import tarfile
+import xtarfile as tarfile
 import traceback
 
 import internetarchive as ia
